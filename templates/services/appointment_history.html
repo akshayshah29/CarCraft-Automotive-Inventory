@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Service Appointments — CarCraft Automotive{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small text-secondary">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-secondary">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'accounts:profile' %}" class="text-secondary">Account</a></li>
+            <li class="breadcrumb-item active text-white" aria-current="page">Appointments</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex flex-wrap align-items-end justify-content-between mb-4">
+        <div>
+            <span class="cc-section-label">Workshop Bookings</span>
+            <h1 class="cc-section-heading mb-1">Service Appointments</h1>
+            <p class="text-secondary mb-0">Track upcoming maintenance visits, scheduled times, and completed services.</p>
+        </div>
+        <a href="{% url 'services:book' %}" class="btn btn-cc-primary mt-3 mt-md-0">
+            <i class="bi bi-calendar-plus me-1"></i> Book New Service
+        </a>
+    </div>
+
+    {% if appointments %}
+        <div class="table-responsive rounded border" style="background-color: #12151b; border-color: #232932 !important;">
+            <table class="table table-cc align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Service Package</th>
+                        <th>Vehicle</th>
+                        <th>Date & Time</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appt in appointments %}
+                        <tr>
+                            <td>
+                                <span class="fw-bold font-monospace text-warning">#{{ appt.appointment_id }}</span>
+                            </td>
+                            <td>
+                                <div class="fw-bold text-white">{{ appt.service.name }}</div>
+                                <span class="text-muted small">{{ appt.service.price|inr }} &bull; {{ appt.service.duration }}</span>
+                            </td>
+                            <td>
+                                <div class="text-white">{{ appt.vehicle_model }}</div>
+                                {% if appt.vehicle_reg_number %}
+                                    <div class="text-muted small font-monospace">{{ appt.vehicle_reg_number }}</div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="text-white fw-semibold">{{ appt.preferred_date|date:"M d, Y" }}</div>
+                                <div class="text-muted small">{{ appt.preferred_time }}</div>
+                            </td>
+                            <td>
+                                <span class="badge {% if appt.status == 'Confirmed' or appt.status == 'Completed' %}badge-cc-confirmed{% elif appt.status == 'Cancelled' %}badge-cc-cancelled{% else %}badge-cc-pending{% endif %}">
+                                    {{ appt.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="{% url 'services:confirmation' appt.appointment_id %}" class="btn btn-sm btn-cc-outline" title="View Details">
+                                        View
+                                    </a>
+                                    {% if appt.status == 'Pending' or appt.status == 'Confirmed' %}
+                                        <a href="{% url 'services:cancel' appt.appointment_id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to cancel this appointment?');" title="Cancel Appointment">
+                                            Cancel
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="cc-empty-state">
+            <i class="bi bi-calendar-x cc-empty-icon"></i>
+            <h3 class="cc-empty-title">No Service Appointments</h3>
+            <p class="cc-empty-desc">You do not have any active or past service appointments scheduled with CarCraft workshop.</p>
+            <a href="{% url 'services:book' %}" class="btn btn-cc-primary">Schedule Your First Service</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

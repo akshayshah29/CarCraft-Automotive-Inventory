@@ -1,0 +1,331 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dealership & Suite Staff Dashboard — CarCraft{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-5 py-4">
+    <!-- Header -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 pb-3 border-bottom border-secondary">
+        <div>
+            <span class="cc-section-label"><i class="bi bi-shield-lock-fill me-1"></i> Staff Administration Suite</span>
+            <h1 class="cc-section-heading mb-0">Dealership Management Dashboard</h1>
+        </div>
+        <div class="d-flex gap-2 mt-3 mt-md-0">
+            <a href="/admin/" target="_blank" class="btn btn-cc-outline">
+                <i class="bi bi-database-gear me-1"></i> Django Admin ORM
+            </a>
+            <a href="{% url 'home' %}" class="btn btn-cc-primary">
+                <i class="bi bi-box-arrow-up-right me-1"></i> Live Storefront
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics Grid (All 6 Mandatory Metrics) -->
+    <div class="row g-3 mb-4">
+        <!-- Metric 1: Total Vehicles -->
+        <div class="col-xl-2 col-md-4 col-6">
+            <div class="cc-stat-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="cc-stat-label">Total Vehicles</span>
+                    <i class="bi bi-car-front text-warning fs-5"></i>
+                </div>
+                <div class="cc-stat-number">{{ total_vehicles }}</div>
+                <div class="small text-muted">Fleet inventory</div>
+            </div>
+        </div>
+
+        <!-- Metric 2: Available Vehicles -->
+        <div class="col-xl-2 col-md-4 col-6">
+            <div class="cc-stat-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="cc-stat-label">Available</span>
+                    <i class="bi bi-check-circle text-success fs-5"></i>
+                </div>
+                <div class="cc-stat-number text-success">{{ available_vehicles }}</div>
+                <div class="small text-muted">Ready to purchase</div>
+            </div>
+        </div>
+
+        <!-- Metric 3: Total Products -->
+        <div class="col-xl-2 col-md-4 col-6">
+            <div class="cc-stat-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="cc-stat-label">Total Products</span>
+                    <i class="bi bi-box-seam text-info fs-5"></i>
+                </div>
+                <div class="cc-stat-number">{{ total_products }}</div>
+                <div class="small text-muted">Catalog items</div>
+            </div>
+        </div>
+
+        <!-- Metric 4: Pending Orders -->
+        <div class="col-xl-2 col-md-4 col-6">
+            <div class="cc-stat-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="cc-stat-label">Pending Orders</span>
+                    <i class="bi bi-clock-history text-warning fs-5"></i>
+                </div>
+                <div class="cc-stat-number text-warning">{{ pending_orders }}</div>
+                <div class="small text-muted">Requires fulfillment</div>
+            </div>
+        </div>
+
+        <!-- Metric 5: Pending Appointments -->
+        <div class="col-xl-2 col-md-4 col-6">
+            <div class="cc-stat-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="cc-stat-label">Pending Servicing</span>
+                    <i class="bi bi-calendar-event text-danger fs-5"></i>
+                </div>
+                <div class="cc-stat-number text-danger">{{ pending_appointments }}</div>
+                <div class="small text-muted">Awaiting confirmation</div>
+            </div>
+        </div>
+
+        <!-- Metric 6: Registered Users -->
+        <div class="col-xl-2 col-md-4 col-6">
+            <div class="cc-stat-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="cc-stat-label">Registered Users</span>
+                    <i class="bi bi-people text-secondary fs-5"></i>
+                </div>
+                <div class="cc-stat-number">{{ registered_users }}</div>
+                <div class="small text-muted">Platform members</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Operational Tables -->
+    <div class="row g-4 mb-4">
+        <!-- Recent Orders -->
+        <div class="col-lg-6">
+            <div class="p-4 rounded border h-100" style="background-color: #12151b; border-color: #232932 !important;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="fs-5 fw-bold text-white mb-0">
+                        <i class="bi bi-bag-check text-warning me-2"></i> Recent Customer Orders
+                    </h3>
+                    <a href="/admin/orders/order/" target="_blank" class="small text-secondary text-decoration-none">Manage All &raquo;</a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-cc align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Order Ref</th>
+                                <th>Customer</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ord in recent_orders %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'orders:detail' ord.order_number %}" class="fw-bold font-monospace text-warning text-decoration-none">
+                                            #{{ ord.order_number }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <div class="text-white">{{ ord.full_name }}</div>
+                                        <div class="text-muted small">{{ ord.email }}</div>
+                                    </td>
+                                    <td class="text-white fw-bold">{{ ord.total_amount|inr }}</td>
+                                    <td>
+                                        <span class="badge {% if ord.status == 'Delivered' or ord.status == 'Confirmed' %}badge-cc-confirmed{% elif ord.status == 'Cancelled' %}badge-cc-cancelled{% else %}badge-cc-pending{% endif %}">
+                                            {{ ord.status }}
+                                        </span>
+                                    </td>
+                                    <td class="text-muted small">{{ ord.created_at|date:"M d, H:i" }}</td>
+                                    <td>
+                                        <form method="post" action="{% url 'staff_update_order' ord.order_number %}" class="d-flex gap-1 align-items-center">
+                                            {% csrf_token %}
+                                            <select name="status" class="form-select form-select-sm" style="width: 120px; background-color: #1a1e26; color: #ccc; border-color: #333; font-size: 0.75rem;">
+                                                <option value="Pending" {% if ord.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                                <option value="Confirmed" {% if ord.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                                                <option value="Processing" {% if ord.status == 'Processing' %}selected{% endif %}>Processing</option>
+                                                <option value="Shipped" {% if ord.status == 'Shipped' %}selected{% endif %}>Shipped</option>
+                                                <option value="Delivered" {% if ord.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+                                                <option value="Cancelled" {% if ord.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-sm btn-cc-primary" style="font-size: 0.7rem; padding: 3px 8px;">Update</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="6" class="text-center text-muted py-3">No orders found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Appointments -->
+        <div class="col-lg-6">
+            <div class="p-4 rounded border h-100" style="background-color: #12151b; border-color: #232932 !important;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="fs-5 fw-bold text-white mb-0">
+                        <i class="bi bi-calendar-check text-warning me-2"></i> Recent Service Appointments
+                    </h3>
+                    <a href="/admin/services/appointment/" target="_blank" class="small text-secondary text-decoration-none">Manage All &raquo;</a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-cc align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Client & Vehicle</th>
+                                <th>Service</th>
+                                <th>Scheduled</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appt in recent_appointments %}
+                                <tr>
+                                    <td>
+                                        <span class="fw-bold font-monospace text-warning">#{{ appt.appointment_id }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="text-white fw-semibold">{{ appt.customer_name }}</div>
+                                        <div class="text-muted small">{{ appt.vehicle_model|truncatechars:22 }}</div>
+                                    </td>
+                                    <td class="text-white small">{{ appt.service.name }}</td>
+                                    <td>
+                                        <div class="text-white small">{{ appt.preferred_date|date:"M d, Y" }}</div>
+                                        <div class="text-muted" style="font-size: 0.72rem;">{{ appt.preferred_time }}</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if appt.status == 'Confirmed' or appt.status == 'Completed' %}badge-cc-confirmed{% elif appt.status == 'Cancelled' %}badge-cc-cancelled{% else %}badge-cc-pending{% endif %}">
+                                            {{ appt.status }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <form method="post" action="{% url 'staff_update_appointment' appt.appointment_id %}" class="d-flex gap-1 align-items-center">
+                                            {% csrf_token %}
+                                            <select name="status" class="form-select form-select-sm" style="width: 120px; background-color: #1a1e26; color: #ccc; border-color: #333; font-size: 0.75rem;">
+                                                <option value="Pending" {% if appt.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                                <option value="Confirmed" {% if appt.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                                                <option value="Completed" {% if appt.status == 'Completed' %}selected{% endif %}>Completed</option>
+                                                <option value="Cancelled" {% if appt.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-sm btn-cc-primary" style="font-size: 0.7rem; padding: 3px 8px;">Update</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="6" class="text-center text-muted py-3">No appointments found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Secondary Row: Recent Vehicles & Low Stock Products -->
+    <div class="row g-4">
+        <!-- Recent Vehicles Added -->
+        <div class="col-lg-6">
+            <div class="p-4 rounded border h-100" style="background-color: #12151b; border-color: #232932 !important;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="fs-5 fw-bold text-white mb-0">
+                        <i class="bi bi-car-front text-warning me-2"></i> Showroom Vehicles
+                    </h3>
+                    <a href="/admin/vehicles/vehicle/" target="_blank" class="small text-secondary text-decoration-none">Add / Edit &raquo;</a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-cc align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Vehicle</th>
+                                <th>Specs</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for veh in recent_vehicles %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <img src="{{ veh.display_image }}" class="rounded" style="width: 50px; height: 35px; object-fit: cover;">
+                                            <div>
+                                                <div class="text-white fw-bold">{{ veh.title }}</div>
+                                                <div class="text-muted small">{{ veh.year }} &bull; {{ veh.body_type }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-muted small">
+                                        {{ veh.fuel_type }} &bull; {{ veh.mileage }} km
+                                    </td>
+                                    <td class="text-white fw-bold">{{ veh.price|inr }}</td>
+                                    <td><span class="badge badge-cc-available">{{ veh.availability }}</span></td>
+                                    <td>
+                                        <a href="{% url 'vehicles:detail' veh.slug %}" class="btn btn-sm btn-cc-outline" target="_blank">View</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Stock Products -->
+        <div class="col-lg-6">
+            <div class="p-4 rounded border h-100" style="background-color: #12151b; border-color: #232932 !important;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="fs-5 fw-bold text-white mb-0">
+                        <i class="bi bi-exclamation-triangle text-danger me-2"></i> Low Stock & Inventory Alerts
+                    </h3>
+                    <a href="/admin/products/product/" target="_blank" class="small text-secondary text-decoration-none">Manage Stock &raquo;</a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-cc align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Remaining Stock</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for prod in low_stock_products %}
+                                <tr>
+                                    <td>
+                                        <div class="text-white fw-semibold">{{ prod.name|truncatechars:28 }}</div>
+                                        <div class="text-muted small font-monospace">#{{ prod.part_number }}</div>
+                                    </td>
+                                    <td class="text-muted small">{{ prod.category.name }}</td>
+                                    <td class="text-white fw-bold">{{ prod.price|inr }}</td>
+                                    <td>
+                                        {% if prod.stock == 0 %}
+                                            <span class="badge bg-danger">Out of stock (0)</span>
+                                        {% elif prod.stock <= 8 %}
+                                            <span class="badge bg-danger">Critical: {{ prod.stock }} units</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark">{{ prod.stock }} units</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="4" class="text-center text-muted py-3">All products are adequately stocked.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

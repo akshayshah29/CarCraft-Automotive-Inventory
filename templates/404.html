@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Page Not Found (404) — CarCraft Automotive{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 text-center">
+            <div class="cc-empty-state my-5">
+                <div class="display-1 fw-extrabold text-warning mb-2" style="letter-spacing: 0.05em;">404</div>
+                <h1 class="fs-2 fw-bold text-white mb-3">Off-Road: Page Not Found</h1>
+                <p class="cc-empty-desc">
+                    The requested automotive link, vehicle listing, or page route could not be located in our dealership database.
+                </p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{% url 'home' %}" class="btn btn-cc-primary">
+                        <i class="bi bi-house me-1"></i> Return Home
+                    </a>
+                    <a href="{% url 'vehicles:list' %}" class="btn btn-cc-outline">
+                        <i class="bi bi-car-front me-1"></i> Explore Cars
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

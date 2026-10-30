@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Book a Service Appointment — CarCraft Automotive{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small text-secondary">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-secondary">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'services:list' %}" class="text-secondary">Services</a></li>
+            <li class="breadcrumb-item active text-white" aria-current="page">Book Appointment</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="mb-4">
+                <span class="cc-section-label">Service Bay Reservation</span>
+                <h1 class="cc-section-heading mb-1">Book Your Service Appointment</h1>
+                <p class="text-secondary mb-0">Select your maintenance package, preferred date, and vehicle specs. Our certified advisors will confirm your bay slot.</p>
+            </div>
+
+            <div class="p-4 p-md-5 rounded border" style="background-color: #12151b; border-color: #232932 !important;">
+                <form method="POST" action="{% url 'services:book' %}">
+                    {% csrf_token %}
+
+                    <!-- Step 1: Select Service Package -->
+                    <h3 class="fs-5 fw-bold text-white mb-3">
+                        <i class="bi bi-wrench text-warning me-2"></i> 1. Select Maintenance Service
+                    </h3>
+                    
+                    <div class="mb-4">
+                        <label class="form-label cc-label">Automotive Service Package</label>
+                        <select name="service_id" class="form-select cc-input" required>
+                            <option value="">-- Choose a Service --</option>
+                            {% for s in services %}
+                                <option value="{{ s.id }}" {% if selected_service and selected_service.id == s.id %}selected{% endif %}>
+                                    {{ s.name }} — Starting at {{ s.price|inr }} ({{ s.duration }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <hr class="border-secondary my-4">
+
+                    <!-- Step 2: Vehicle Details -->
+                    <h3 class="fs-5 fw-bold text-white mb-3">
+                        <i class="bi bi-car-front text-warning me-2"></i> 2. Your Vehicle Information
+                    </h3>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-7">
+                            <label class="form-label cc-label">Vehicle Make, Model & Year</label>
+                            <input type="text" name="vehicle_model" class="form-control cc-input" placeholder="e.g. 2023 BMW 330i M Sport" required>
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label cc-label">License Plate / Reg # (Optional)</label>
+                            <input type="text" name="vehicle_reg_number" class="form-control cc-input" placeholder="e.g. DL-01-AB-1234">
+                        </div>
+                    </div>
+
+                    <hr class="border-secondary my-4">
+
+                    <!-- Step 3: Date & Preferred Time -->
+                    <h3 class="fs-5 fw-bold text-white mb-3">
+                        <i class="bi bi-calendar-event text-warning me-2"></i> 3. Preferred Date & Time
+                    </h3>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label cc-label">Appointment Date</label>
+                            <input type="date" name="preferred_date" class="form-control cc-input" required id="appointmentDateField">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label cc-label">Preferred Time Slot</label>
+                            <select name="preferred_time" class="form-select cc-input" required>
+                                <option value="09:00 AM - 11:00 AM">09:00 AM - 11:00 AM (Morning Slot)</option>
+                                <option value="11:00 AM - 01:00 PM">11:00 AM - 01:00 PM (Midday Slot)</option>
+                                <option value="02:00 PM - 04:00 PM">02:00 PM - 04:00 PM (Afternoon Slot)</option>
+                                <option value="04:00 PM - 06:00 PM">04:00 PM - 06:00 PM (Evening Slot)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr class="border-secondary my-4">
+
+                    <!-- Step 4: Contact Information -->
+                    <h3 class="fs-5 fw-bold text-white mb-3">
+                        <i class="bi bi-person text-warning me-2"></i> 4. Contact Details
+                    </h3>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label cc-label">Full Name</label>
+                            <input type="text" name="customer_name" class="form-control cc-input" value="{{ initial_user.name }}" placeholder="Your Name" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label cc-label">Email Address</label>
+                            <input type="email" name="customer_email" class="form-control cc-input" value="{{ initial_user.email }}" placeholder="name@domain.com" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label cc-label">Phone Number</label>
+                            <input type="tel" name="customer_phone" class="form-control cc-input" value="{{ initial_user.phone }}" placeholder="+91 98765 43210" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label cc-label">Service Notes & Specific Symptoms (Optional)</label>
+                            <textarea name="notes" class="form-control cc-input" rows="3" placeholder="Describe any vibrations, warning lights, unusual sounds or requests..."></textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-cc-primary w-100 py-3 fs-6">
+                        <i class="bi bi-calendar2-check me-2"></i> Confirm Service Appointment
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Ensure date picker doesn't allow past dates
+    const dateInput = document.getElementById('appointmentDateField');
+    if (dateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+        if (!dateInput.value) {
+            // Default to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            dateInput.value = tomorrow.toISOString().split('T')[0];
+        }
+    }
+</script>
+{% endblock %}

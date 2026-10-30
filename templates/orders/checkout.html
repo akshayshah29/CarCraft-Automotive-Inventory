@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Simulated Checkout — CarCraft Automotive{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small text-secondary">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-secondary">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'orders:cart' %}" class="text-secondary">Cart</a></li>
+            <li class="breadcrumb-item active text-white" aria-current="page">Checkout</li>
+        </ol>
+    </nav>
+
+    <div class="mb-4">
+        <span class="cc-section-label">Order Finalization</span>
+        <h1 class="cc-section-heading mb-1">Express Delivery Checkout</h1>
+        <p class="text-secondary mb-0">Simulated order checkout for academic demonstration.</p>
+    </div>
+
+    <form method="POST" action="{% url 'orders:checkout' %}">
+        {% csrf_token %}
+        <div class="row g-4">
+            <!-- Shipping & Contact Details -->
+            <div class="col-lg-7">
+                <div class="p-4 rounded border mb-4" style="background-color: #12151b; border-color: #232932 !important;">
+                    <h3 class="fs-5 fw-bold text-white mb-3">
+                        <i class="bi bi-geo-alt text-warning me-2"></i> Shipping & Contact Information
+                    </h3>
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label cc-label">Full Name</label>
+                            <input type="text" name="name" class="form-control cc-input" value="{{ initial.name }}" placeholder="First & Last Name" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label cc-label">Email Address</label>
+                            <input type="email" name="email" class="form-control cc-input" value="{{ initial.email }}" placeholder="name@domain.com" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label cc-label">Phone Number</label>
+                            <input type="tel" name="phone" class="form-control cc-input" value="{{ initial.phone }}" placeholder="+91 98765 43210" required>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label cc-label">Street Address / Suite</label>
+                            <textarea name="address" class="form-control cc-input" rows="2" placeholder="e.g. Sector 62, Noida" required>{{ initial.address }}</textarea>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label cc-label">City</label>
+                            <input type="text" name="city" class="form-control cc-input" value="{{ initial.city }}" placeholder="Noida" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label cc-label">State</label>
+                            <input type="text" name="state" class="form-control cc-input" value="{{ initial.state }}" placeholder="Uttar Pradesh" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label cc-label">PIN Code</label>
+                            <input type="text" name="pincode" class="form-control cc-input" value="{{ initial.pincode }}" placeholder="201309" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulated Payment Gateway Option -->
+                <div class="p-4 rounded border" style="background-color: #12151b; border-color: #232932 !important;">
+                    <h3 class="fs-5 fw-bold text-white mb-2">
+                        <i class="bi bi-credit-card text-warning me-2"></i> Payment Method (Simulated)
+                    </h3>
+                    <p class="text-secondary small mb-3">No actual card charges will occur. This is an academic simulated payment workflow.</p>
+
+                    <div class="p-3 border rounded mb-3" style="background-color: #181d24; border-color: #232932 !important;">
+                        <div class="form-check d-flex align-items-center gap-2">
+                            <input class="form-check-input" type="radio" name="payment_choice" id="paySimulated" checked>
+                            <label class="form-check-label text-white fw-semibold" for="paySimulated">
+                                CarCraft Simulated Direct Authorization (Demo)
+                            </label>
+                        </div>
+                        <div class="small text-muted ps-4 pt-1">Automatic zero-latency test transaction authorization.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Review Column -->
+            <div class="col-lg-5">
+                <div class="p-4 rounded border sticky-top" style="background-color: #12151b; border-color: #232932 !important; top: 85px;">
+                    <h3 class="fs-5 fw-bold text-white mb-3">Items in Order ({{ cart.total_items }})</h3>
+
+                    <!-- Mini Cart List -->
+                    <div class="overflow-auto mb-3" style="max-height: 250px;">
+                        {% for item in items %}
+                            <div class="d-flex align-items-center justify-content-between py-2 border-bottom border-secondary">
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="{{ item.product.display_image }}" alt="" class="rounded border border-secondary" style="width: 44px; height: 44px; object-fit: cover;">
+                                    <div>
+                                        <div class="small fw-semibold text-white">{{ item.product.name|truncatechars:26 }}</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">Qty: {{ item.quantity }} &times; {{ item.product.price|inr }}</div>
+                                    </div>
+                                </div>
+                                <span class="small fw-bold text-warning">{{ item.item_total|inr }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Totals Breakdown -->
+                    <div class="d-flex justify-content-between text-secondary mb-2 small">
+                        <span>Subtotal</span>
+                        <span class="text-white">{{ cart.subtotal|inr }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between text-secondary mb-2 small">
+                        <span>Estimated Tax (12%)</span>
+                        <span class="text-white">{{ cart.estimated_tax|inr }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between text-secondary mb-3 small">
+                        <span>Shipping</span>
+                        <span class="text-success fw-bold">FREE</span>
+                    </div>
+
+                    <hr class="border-secondary my-3">
+
+                    <div class="d-flex justify-content-between align-items-baseline mb-4">
+                        <span class="fs-6 fw-bold text-white text-uppercase">Total Due</span>
+                        <span class="fs-3 fw-extrabold text-warning">{{ cart.total|inr }}</span>
+                    </div>
+
+                    <button type="submit" class="btn btn-cc-primary w-100 py-3 fs-6">
+                        <i class="bi bi-lock-fill me-2"></i> Confirm & Place Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

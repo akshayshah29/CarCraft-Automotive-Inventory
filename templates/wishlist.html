@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Saved Wishlist — CarCraft Automotive{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small text-secondary">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-secondary">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'accounts:profile' %}" class="text-secondary">Account</a></li>
+            <li class="breadcrumb-item active text-white" aria-current="page">Wishlist</li>
+        </ol>
+    </nav>
+
+    <div class="mb-4">
+        <span class="cc-section-label">Personal Curated Garage</span>
+        <h1 class="cc-section-heading mb-1">Saved Wishlist</h1>
+        <p class="text-secondary mb-0">Review saved vehicles and genuine components for rapid consultation or purchase.</p>
+    </div>
+
+    {% if total_count > 0 %}
+        <!-- Vehicles Section -->
+        {% if vehicle_wishlists %}
+            <div class="mb-5">
+                <h3 class="fs-4 fw-bold text-white mb-3"><i class="bi bi-car-front text-warning me-2"></i> Saved Vehicles ({{ vehicle_wishlists.count }})</h3>
+                <div class="row g-4">
+                    {% for item in vehicle_wishlists %}
+                        <div class="col-lg-4 col-md-6 cc-wishlist-item" style="transition: all 0.3s ease;">
+                            <div class="cc-card">
+                                <div class="cc-card-img-wrapper">
+                                    <img src="{{ item.vehicle.display_image }}" alt="{{ item.vehicle.title }}" class="cc-card-img" loading="lazy">
+                                    <span class="cc-card-badge">{{ item.vehicle.year }} &bull; {{ item.vehicle.body_type }}</span>
+
+                                    <!-- Remove Button -->
+                                    <button type="button" class="cc-card-wishlist-btn cc-wishlist-toggle active" data-url="{% url 'vehicles:wishlist_toggle' item.vehicle.id %}" title="Remove from Wishlist">
+                                        <i class="bi bi-heart-fill"></i>
+                                    </button>
+                                </div>
+                                <div class="cc-card-body">
+                                    <span class="cc-card-brand">{{ item.vehicle.brand.name }}</span>
+                                    <h4 class="cc-card-title fs-5">{{ item.vehicle.model_name }}</h4>
+                                    
+                                    <div class="cc-spec-grid">
+                                        <div class="cc-spec-item">
+                                            Fuel
+                                            <strong>{{ item.vehicle.fuel_type }}</strong>
+                                        </div>
+                                        <div class="cc-spec-item">
+                                            Trans.
+                                            <strong>{{ item.vehicle.transmission|truncatechars:10 }}</strong>
+                                        </div>
+                                        <div class="cc-spec-item">
+                                            Mileage
+                                            <strong>{{ item.vehicle.mileage|floatformat:0 }} km</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="cc-card-footer">
+                                        <div class="cc-card-price-group">
+                                            <span class="cc-card-price">{{ item.vehicle.price|inr }}</span>
+                                        </div>
+                                        <a href="{% url 'vehicles:detail' item.vehicle.slug %}" class="btn btn-sm btn-cc-primary cc-card-action-btn">
+                                            View Details
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Products Section -->
+        {% if product_wishlists %}
+            <div>
+                <h3 class="fs-4 fw-bold text-white mb-3"><i class="bi bi-box-seam text-warning me-2"></i> Saved Parts & Accessories ({{ product_wishlists.count }})</h3>
+                <div class="row g-4">
+                    {% for item in product_wishlists %}
+                        <div class="col-lg-3 col-md-6 cc-wishlist-item" style="transition: all 0.3s ease;">
+                            <div class="cc-card">
+                                <div class="cc-card-img-wrapper" style="padding-top: 70%;">
+                                    <img src="{{ item.product.display_image }}" alt="{{ item.product.name }}" class="cc-card-img" loading="lazy">
+                                    <span class="cc-card-badge">{{ item.product.category.name }}</span>
+
+                                    <!-- Remove Button -->
+                                    <button type="button" class="cc-card-wishlist-btn cc-wishlist-toggle active" data-url="{% url 'products:wishlist_toggle' item.product.id %}" title="Remove from Wishlist">
+                                        <i class="bi bi-heart-fill"></i>
+                                    </button>
+                                </div>
+                                <div class="cc-card-body">
+                                    <h4 class="cc-card-title fs-6 mb-2">
+                                        <a href="{% url 'products:detail' item.product.slug %}" class="text-white text-decoration-none">
+                                            {{ item.product.name|truncatechars:38 }}
+                                        </a>
+                                    </h4>
+                                    <div class="small text-muted mb-3">Part #{{ item.product.part_number|default:"OEM" }}</div>
+
+                                    <div class="cc-card-footer">
+                                        <span class="cc-card-price fs-5">{{ item.product.price|inr }}</span>
+                                        <form action="{% url 'orders:add_to_cart' item.product.id %}" method="POST" class="d-inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button type="submit" class="btn btn-sm btn-cc-primary" {% if not item.product.in_stock %}disabled{% endif %}>
+                                                <i class="bi bi-cart-plus"></i> Add
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+    {% else %}
+        <div class="cc-empty-state">
+            <i class="bi bi-heart cc-empty-icon"></i>
+            <h3 class="cc-empty-title">Your Wishlist is Empty</h3>
+            <p class="cc-empty-desc">You have not saved any vehicles or parts to your wishlist yet. Explore our dealership stock or spare parts catalog to save your favorites.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'vehicles:list' %}" class="btn btn-cc-primary">Browse Vehicles</a>
+                <a href="{% url 'products:list' %}" class="btn btn-cc-outline">Browse Parts</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,414 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}CarCraft — Automotive Inventory & Dealership Suite{% endblock %}
+{% block alerts_padding %}0rem{% endblock %}
+
+{% block content %}
+<!-- ==========================================================================
+     1. CINEMATIC VIDEO HERO SECTION
+     ========================================================================== -->
+<section class="cc-hero">
+    <!-- Video Wrapper & Fallback Layer -->
+    <div class="cc-video-wrapper">
+        <div class="cc-video-fallback-bg"></div>
+        <video class="hero-video" autoplay muted loop playsinline preload="auto">
+            <source src="{% static 'video/carcraft-hero.mp4' %}" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- Dark Cinematic Overlay -->
+    <div class="cc-hero-overlay"></div>
+
+    <!-- Hero Content -->
+    <div class="container cc-hero-content">
+        <div class="row">
+            <div class="col-xl-9 col-lg-10">
+                <span class="cc-hero-pretitle">The Automotive Standard</span>
+                <h1 class="cc-hero-title">DRIVE. DISCOVER. MAINTAIN.</h1>
+                <p class="cc-hero-subtitle">Everything your car needs, all in one place.</p>
+                <p class="cc-hero-desc">
+                    Explore premium vehicles, genuine parts and professional automotive services with CarCraft. Engineered for enthusiasts, drivers, and precision caretakers.
+                </p>
+                <div class="cc-hero-ctas">
+                    <a href="{% url 'vehicles:list' %}" class="btn btn-cc-primary px-4 py-3">
+                        <i class="bi bi-speedometer2 me-1"></i> EXPLORE CARS
+                    </a>
+                    <a href="{% url 'services:book' %}" class="btn btn-cc-outline px-4 py-3">
+                        <i class="bi bi-calendar-check me-1"></i> BOOK A SERVICE
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     2. SHORT INTRO SECTION
+     ========================================================================== -->
+<section class="cc-intro-section" id="about">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <span class="cc-section-label">A Seamless Automotive Ecosystem</span>
+                <h2 class="cc-section-heading">ENGINEERED FOR THE ROAD AHEAD</h2>
+                <p class="cc-section-desc">
+                    CarCraft bridges the gap between verified luxury vehicle acquisition, authentic OEM parts procurement, and factory-certified mechanical servicing. Driven by transparent metrics, certified history, and uncompromising engineering integrity.
+                </p>
+            </div>
+            <div class="col-lg-5">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="p-3 border rounded" style="background: #12151b; border-color: #232932 !important;">
+                            <div class="fs-3 fw-bold text-white mb-1">100%</div>
+                            <div class="small text-muted">Certified Genuine OEM & Performance Parts</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 border rounded" style="background: #12151b; border-color: #232932 !important;">
+                            <div class="fs-3 fw-bold text-white mb-1">60+</div>
+                            <div class="small text-muted">Point Rigorous Dealership Inspection</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     3. THREE LARGE BUSINESS PANELS
+     ========================================================================== -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- PANEL 1: CARS -->
+            <div class="col-lg-4">
+                <div class="cc-business-panel">
+                    <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1000&q=80" alt="CarCraft Dealership Vehicles" class="cc-business-panel-img">
+                    <div class="cc-business-panel-overlay"></div>
+                    <div class="cc-business-panel-content">
+                        <span class="cc-business-panel-tag">Vehicle Inventory</span>
+                        <h3 class="cc-business-panel-title">Find Your Car</h3>
+                        <p class="cc-business-panel-desc">
+                            Explore premium vehicles selected for performance, comfort and everyday driving.
+                        </p>
+                        <a href="{% url 'vehicles:list' %}" class="btn btn-cc-primary">
+                            EXPLORE CARS <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 2: PARTS & ACCESSORIES -->
+            <div class="col-lg-4">
+                <div class="cc-business-panel">
+                    <img src="{% static 'images/upgrade-your-drive.jpg' %}" alt="CarCraft Genuine Auto Parts" class="cc-business-panel-img">
+                    <div class="cc-business-panel-overlay"></div>
+                    <div class="cc-business-panel-content">
+                        <span class="cc-business-panel-tag">Genuine Components</span>
+                        <h3 class="cc-business-panel-title">Upgrade Your Drive</h3>
+                        <p class="cc-business-panel-desc">
+                            Shop genuine automotive parts and accessories for your vehicle.
+                        </p>
+                        <a href="{% url 'products:list' %}" class="btn btn-cc-primary">
+                            SHOP PARTS <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 3: SERVICE -->
+            <div class="col-lg-4">
+                <div class="cc-business-panel">
+                    <img src="https://images.unsplash.com/photo-1613214149922-f1809c99b414?auto=format&fit=crop&w=1000&q=80" alt="CarCraft Certified Workshop" class="cc-business-panel-img">
+                    <div class="cc-business-panel-overlay"></div>
+                    <div class="cc-business-panel-content">
+                        <span class="cc-business-panel-tag">Certified Service Center</span>
+                        <h3 class="cc-business-panel-title">Keep It Running</h3>
+                        <p class="cc-business-panel-desc">
+                            Book professional automotive maintenance and repair services.
+                        </p>
+                        <a href="{% url 'services:book' %}" class="btn btn-cc-primary">
+                            BOOK SERVICE <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     4. FEATURED VEHICLES SECTION
+     ========================================================================== -->
+<section class="py-5" style="background-color: #0d1015;">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-end justify-content-between mb-4">
+            <div>
+                <span class="cc-section-label">Curated Dealership Collection</span>
+                <h2 class="cc-section-heading mb-0">Featured Vehicles</h2>
+                <p class="text-secondary mt-1 mb-0">Discover vehicles ready for your next drive.</p>
+            </div>
+            <a href="{% url 'vehicles:list' %}" class="btn btn-cc-outline mt-3 mt-md-0">
+                View All Inventory <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="row g-4">
+            {% for vehicle in featured_vehicles %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="cc-card">
+                        <div class="cc-card-img-wrapper">
+                            <img src="{{ vehicle.display_image }}" alt="{{ vehicle.title }}" class="cc-card-img" loading="lazy">
+                            <span class="cc-card-badge">{{ vehicle.year }} &bull; {{ vehicle.body_type }}</span>
+                            
+                            <!-- Wishlist Toggle -->
+                            <button type="button" class="cc-card-wishlist-btn cc-wishlist-toggle {% if vehicle.id in user_vehicle_wishlist_ids %}active{% endif %}" data-url="{% url 'vehicles:wishlist_toggle' vehicle.id %}" title="Add to Wishlist">
+                                <i class="bi {% if vehicle.id in user_vehicle_wishlist_ids %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                            </button>
+                        </div>
+                        <div class="cc-card-body">
+                            <span class="cc-card-brand">{{ vehicle.brand.name }}</span>
+                            <h3 class="cc-card-title">{{ vehicle.model_name }}</h3>
+                            
+                            <div class="cc-spec-grid">
+                                <div class="cc-spec-item">
+                                    Fuel
+                                    <strong>{{ vehicle.fuel_type }}</strong>
+                                </div>
+                                <div class="cc-spec-item">
+                                    Transmission
+                                    <strong>{{ vehicle.transmission }}</strong>
+                                </div>
+                                <div class="cc-spec-item">
+                                    Mileage
+                                    <strong>{{ vehicle.mileage|floatformat:0 }} km</strong>
+                                </div>
+                            </div>
+
+                            <div class="cc-card-footer">
+                                <div class="cc-card-price-group">
+                                    <span class="cc-card-price">{{ vehicle.price|inr }}</span>
+                                    <span class="cc-card-price-sub">Available &bull; Verified</span>
+                                </div>
+                                <a href="{% url 'vehicles:detail' vehicle.slug %}" class="btn btn-sm btn-cc-primary cc-card-action-btn">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="cc-empty-state">
+                        <i class="bi bi-car-front cc-empty-icon"></i>
+                        <h4 class="cc-empty-title">No Featured Vehicles</h4>
+                        <p class="cc-empty-desc">Check back soon or explore our complete showroom inventory.</p>
+                        <a href="{% url 'vehicles:list' %}" class="btn btn-cc-primary">Browse All Vehicles</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     5. PARTS & ACCESSORIES SECTION
+     ========================================================================== -->
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-end justify-content-between mb-4">
+            <div>
+                <span class="cc-section-label">OEM & Performance Upgrades</span>
+                <h2 class="cc-section-heading mb-0">Parts & Accessories</h2>
+                <p class="text-secondary mt-1 mb-0">Genuine mechanical components and styling enhancements.</p>
+            </div>
+            <a href="{% url 'products:list' %}" class="btn btn-cc-outline mt-3 mt-md-0">
+                Browse Full Catalog <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="row g-4">
+            {% for product in featured_products %}
+                <div class="col-xl-3 col-lg-4 col-md-6">
+                    <div class="cc-card cc-product-card">
+                        <div class="cc-card-img-wrapper" style="padding-top: 70%;">
+                            <img src="{{ product.display_image }}" alt="{{ product.name }}" class="cc-card-img" loading="lazy">
+                            <span class="cc-card-badge">{{ product.category.name }}</span>
+                            
+                            <button type="button" class="cc-card-wishlist-btn cc-wishlist-toggle {% if product.id in user_product_wishlist_ids %}active{% endif %}" data-url="{% url 'products:wishlist_toggle' product.id %}" title="Add to Wishlist">
+                                <i class="bi {% if product.id in user_product_wishlist_ids %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                            </button>
+                        </div>
+                        <div class="cc-card-body">
+                            <span class="cc-card-brand">{{ product.brand_compatibility|truncatechars:26 }}</span>
+                            <h4 class="cc-card-title fs-6 mb-2">{{ product.name|truncatechars:38 }}</h4>
+                            <div class="small cc-part-meta mb-3">Part #{{ product.part_number|default:"OEM-SPEC" }}</div>
+
+                            <div class="cc-card-footer">
+                                <div>
+                                    <span class="cc-card-price fs-5">{{ product.price|inr }}</span>
+                                    {% if product.original_price %}
+                                        <span class="text-decoration-line-through cc-price-original small ms-1">{{ product.original_price|inr }}</span>
+                                    {% endif %}
+                                </div>
+                                <form action="{% url 'orders:add_to_cart' product.id %}" method="POST" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn btn-sm btn-cc-primary" title="Add to Cart">
+                                        <i class="bi bi-cart-plus"></i> Add
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     6. AUTOMOTIVE SERVICES SECTION
+     ========================================================================== -->
+<section class="py-5" style="background-color: #0d1015;">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-end justify-content-between mb-4">
+            <div>
+                <span class="cc-section-label">State-of-the-Art Workshop</span>
+                <h2 class="cc-section-heading mb-0">Automotive Services</h2>
+                <p class="text-secondary mt-1 mb-0">Precision maintenance performed by certified master mechanics.</p>
+            </div>
+            <a href="{% url 'services:list' %}" class="btn btn-cc-outline mt-3 mt-md-0">
+                View All 8 Services <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="row g-4">
+            {% for srv in services|slice:":4" %}
+                <div class="col-lg-3 col-md-6">
+                    <div class="cc-service-card">
+                        <div class="cc-service-img-wrapper">
+                            <img src="{{ srv.display_image }}" alt="{{ srv.name }}" class="cc-service-img" loading="lazy">
+                            <div class="cc-service-icon-box">
+                                <i class="bi {{ srv.icon_class }}"></i>
+                            </div>
+                        </div>
+                        <div class="cc-service-body">
+                            <h3 class="cc-service-title">{{ srv.name }}</h3>
+                            <p class="cc-service-tagline">{{ srv.tagline }}</p>
+
+                            <div class="cc-service-meta">
+                                <div class="cc-service-meta-item">
+                                    Starting at
+                                    <strong>{{ srv.price|inr }}</strong>
+                                </div>
+                                <div class="cc-service-meta-item text-end">
+                                    Duration
+                                    <strong>{{ srv.duration }}</strong>
+                                </div>
+                            </div>
+
+                            <a href="{% url 'services:book_specific' srv.slug %}" class="btn btn-sm btn-cc-primary w-100">
+                                Book Appointment
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     7. WHY CARCRAFT SECTION
+     ========================================================================== -->
+<section class="py-5" id="why-carcraft">
+    <div class="container">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="cc-section-label justify-content-center">The CarCraft Standard</span>
+            <h2 class="cc-section-heading">WHY CHOOSE CARCRAFT</h2>
+            <p class="cc-section-desc mx-auto">
+                Setting a new benchmark for automotive acquisition, upkeep, and maintenance through certified transparency.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="cc-why-card">
+                    <div class="cc-why-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h3 class="cc-why-title">Genuine Parts</h3>
+                    <p class="cc-why-desc">
+                        100% factory original OEM and track-proven aftermarket components backed by full manufacturer guarantees.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="cc-why-card">
+                    <div class="cc-why-icon">
+                        <i class="bi bi-award"></i>
+                    </div>
+                    <h3 class="cc-why-title">Professional Service</h3>
+                    <p class="cc-why-desc">
+                        Certified automotive engineers utilizing manufacturer diagnostic software, torque-calibrated tools, and clean bays.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="cc-why-card">
+                    <div class="cc-why-icon">
+                        <i class="bi bi-cpu"></i>
+                    </div>
+                    <h3 class="cc-why-title">Modern Technology</h3>
+                    <p class="cc-why-desc">
+                        Hunter 3D laser alignment, dealer-grade ECU scanners, and seamless digital service appointment tracking.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="cc-why-card">
+                    <div class="cc-why-icon">
+                        <i class="bi bi-heart-pulse"></i>
+                    </div>
+                    <h3 class="cc-why-title">Customer First</h3>
+                    <p class="cc-why-desc">
+                        Transparent pricing with no hidden charges, live service notifications, and dedicated luxury vehicle sales concierges.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     8. FINAL CALL TO ACTION
+     ========================================================================== -->
+<section class="cc-final-cta">
+    <div class="cc-final-cta-overlay"></div>
+    <div class="container cc-final-cta-content text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <span class="cc-hero-pretitle justify-content-center">Begin Your Journey</span>
+                <h2 class="display-4 fw-extrabold text-white mb-3">Your Car Deserves Better.</h2>
+                <p class="lead text-secondary mb-4 mx-auto" style="max-width: 600px;">
+                    Find your next vehicle, upgrade your drive or book your next service with CarCraft.
+                </p>
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <a href="{% url 'vehicles:list' %}" class="btn btn-cc-primary px-4 py-3">
+                        <i class="bi bi-speedometer2 me-1"></i> EXPLORE CARS
+                    </a>
+                    <a href="{% url 'services:book' %}" class="btn btn-cc-outline px-4 py-3">
+                        <i class="bi bi-wrench-adjustable me-1"></i> BOOK A SERVICE
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

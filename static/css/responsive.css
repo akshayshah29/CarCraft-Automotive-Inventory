@@ -1,0 +1,188 @@
+/* ==========================================================================
+   CARCRAFT — Responsive Style Overrides
+   Mobile, Tablet & Large Display Fine-Tuning
+   ========================================================================== */
+
+@media (max-width: 991.98px) {
+  .cc-navbar {
+    background-color: rgba(14, 17, 22, 0.98) !important;
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--cc-border) !important;
+    padding: 0.75rem 0 !important;
+  }
+
+  .cc-navbar .navbar-collapse {
+    background-color: var(--cc-bg-surface);
+    border: 1px solid var(--cc-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+  }
+
+  .cc-navbar .nav-link {
+    padding: 0.75rem 0.5rem !important;
+    border-bottom: 1px solid var(--cc-border-subtle);
+  }
+
+  .cc-navbar .nav-link.active::after {
+    display: none;
+  }
+
+  .cc-hero {
+    min-height: 90vh;
+  }
+
+  .cc-hero-content {
+    padding-top: 6rem;
+    text-align: left;
+  }
+
+  .cc-business-panel {
+    min-height: 380px;
+    padding: 1.75rem;
+  }
+
+  .cc-business-panel-title {
+    font-size: 1.5rem;
+  }
+
+  .cc-spec-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .cc-hero {
+    min-height: 85vh;
+  }
+
+  .cc-hero-title {
+    font-size: 2.2rem;
+  }
+
+  .cc-hero-ctas {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .cc-hero-ctas .btn {
+    width: 100%;
+  }
+
+  .cc-business-panel {
+    min-height: 340px;
+    padding: 1.5rem;
+  }
+
+  .cc-business-panel-desc {
+    max-width: 100%;
+    font-size: 0.88rem;
+  }
+
+  .cc-final-cta {
+    padding: 5rem 0;
+  }
+
+  .cc-footer-bottom {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .cc-specs-table > :not(caption) > * > *,
+  .cc-specs-table tr td {
+    padding: 0.65rem 0.75rem;
+  }
+
+  .cc-specs-table td:first-child,
+  .cc-specs-table .cc-spec-label {
+    font-size: 0.84rem;
+  }
+
+  .cc-specs-table td:last-child,
+  .cc-specs-table .cc-spec-value {
+    font-size: 0.86rem;
+  }
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
+  }
+  
+  .cc-hero-title {
+    font-size: 5rem;
+  }
+}
+
+/* 1200px - 1399px desktop: optimize 3-column cards with sidebar filter */
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+  .cc-card-body {
+    padding: 1.15rem 1rem;
+  }
+  .cc-card-price {
+    font-size: 1.1rem;
+  }
+  .cc-card-footer {
+    gap: 8px;
+  }
+  .cc-card-footer .btn,
+  .cc-card-action-btn {
+    padding: 0.38rem 0.75rem;
+    font-size: 0.78rem;
+  }
+}
+
+/* Tablet (max 991.98px) */
+@media (max-width: 991.98px) {
+  .vehicle-main-image-wrapper,
+  .cc-vehicle-stage,
+  .main-vehicle-image {
+    height: 400px;
+  }
+}
+
+/* Mobile (max 767.98px) */
+@media (max-width: 767.98px) {
+  .vehicle-main-image-wrapper,
+  .cc-vehicle-stage,
+  .main-vehicle-image {
+    height: 320px;
+  }
+  .cc-card-body {
+    padding: 1.15rem 1rem;
+  }
+}
+
+/* Small mobile (max 575.98px) */
+@media (max-width: 575.98px) {
+  .vehicle-main-image-wrapper,
+  .cc-vehicle-stage,
+  .main-vehicle-image {
+    height: 270px;
+  }
+  .cc-card-footer {
+    gap: 8px;
+  }
+}
+
+/* Extra-small mobile (360px - 400px) */
+@media (max-width: 400px) {
+  .vehicle-main-image-wrapper,
+  .cc-vehicle-stage,
+  .main-vehicle-image {
+    height: 240px;
+  }
+  .cc-card-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .cc-card-footer .btn,
+  .cc-card-action-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+

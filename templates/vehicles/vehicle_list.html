@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Vehicle Inventory — CarCraft Luxury Automotive{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb & Header -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small text-secondary">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-secondary">Home</a></li>
+            <li class="breadcrumb-item active text-white" aria-current="page">Vehicles</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex flex-wrap align-items-end justify-content-between mb-4">
+        <div>
+            <span class="cc-section-label">Verified Showroom Inventory</span>
+            <h1 class="cc-section-heading mb-1">Pre-Owned & Performance Vehicles</h1>
+            <p class="text-secondary mb-0">Showing {{ total_count }} verified premium vehicle{{ total_count|pluralize }}</p>
+        </div>
+
+        <!-- Sorting Dropdown -->
+        <div class="d-flex align-items-center gap-2 mt-3 mt-md-0">
+            <label for="sortSelect" class="text-muted small text-nowrap">Sort By:</label>
+            <form method="GET" id="sortForm" class="d-inline">
+                <!-- Keep existing query params -->
+                {% if current_filters.q %}<input type="hidden" name="q" value="{{ current_filters.q }}">{% endif %}
+                {% if current_filters.brand %}<input type="hidden" name="brand" value="{{ current_filters.brand }}">{% endif %}
+                {% if current_filters.fuel %}<input type="hidden" name="fuel" value="{{ current_filters.fuel }}">{% endif %}
+                {% if current_filters.transmission %}<input type="hidden" name="transmission" value="{{ current_filters.transmission }}">{% endif %}
+                {% if current_filters.body_type %}<input type="hidden" name="body_type" value="{{ current_filters.body_type }}">{% endif %}
+                {% if current_filters.availability %}<input type="hidden" name="availability" value="{{ current_filters.availability }}">{% endif %}
+                {% if current_filters.min_year %}<input type="hidden" name="min_year" value="{{ current_filters.min_year }}">{% endif %}
+                {% if current_filters.min_price %}<input type="hidden" name="min_price" value="{{ current_filters.min_price }}">{% endif %}
+                {% if current_filters.max_price %}<input type="hidden" name="max_price" value="{{ current_filters.max_price }}">{% endif %}
+
+                <select name="sort" id="sortSelect" class="form-select cc-input form-select-sm" onchange="this.form.submit()">
+                    <option value="featured" {% if current_filters.sort == 'featured' %}selected{% endif %}>Featured First</option>
+                    <option value="price_asc" {% if current_filters.sort == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+                    <option value="price_desc" {% if current_filters.sort == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+                    <option value="newest" {% if current_filters.sort == 'newest' %}selected{% endif %}>Newest Year / Added</option>
+                    <option value="oldest" {% if current_filters.sort == 'oldest' %}selected{% endif %}>Oldest Year / Added</option>
+                    <option value="mileage_asc" {% if current_filters.sort == 'mileage_asc' %}selected{% endif %}>Lowest Mileage</option>
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Sidebar Filters -->
+        <div class="col-lg-3">
+            <div class="cc-filter-card sticky-top" style="top: 85px;">
+                <div class="cc-filter-title">
+                    <span><i class="bi bi-funnel me-1 text-warning"></i> Filter Inventory</span>
+                    <a href="{% url 'vehicles:list' %}" class="small text-muted text-decoration-none">Reset</a>
+                </div>
+
+                <form method="GET" action="{% url 'vehicles:list' %}">
+                    {% if current_filters.sort %}
+                        <input type="hidden" name="sort" value="{{ current_filters.sort }}">
+                    {% endif %}
+
+                    <!-- Search Keyword -->
+                    <div class="mb-3">
+                        <label class="form-label cc-label">Search</label>
+                        <input type="text" name="q" value="{{ current_filters.q }}" class="form-control cc-input" placeholder="Model, keyword, VIN...">
+                    </div>
+
+                    <!-- Brand -->
+                    <div class="mb-3">
+                        <label class="form-label cc-label">Brand</label>
+                        <select name="brand" class="form-select cc-input">
+                            <option value="">All Brands</option>
+                            {% for b in brands %}
+                                <option value="{{ b.slug }}" {% if current_filters.brand == b.slug %}selected{% endif %}>{{ b.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Body Type -->
+                    <div class="mb-3">
+                        <label class="form-label cc-label">Body Type</label>
+                        <select name="body_type" class="form-select cc-input">
+                            <option value="">All Body Styles</option>
+                            <option value="Sedan" {% if current_filters.body_type == 'Sedan' %}selected{% endif %}>Sedan</option>
+                            <option value="SUV" {% if current_filters.body_type == 'SUV' %}selected{% endif %}>SUV</option>
+                            <option value="Coupe" {% if current_filters.body_type == 'Coupe' %}selected{% endif %}>Coupe</option>
+                            <option value="Hatchback" {% if current_filters.body_type == 'Hatchback' %}selected{% endif %}>Hatchback</option>
+                            <option value="Convertible" {% if current_filters.body_type == 'Convertible' %}selected{% endif %}>Convertible</option>
+                        </select>
+                    </div>
+
+                    <!-- Fuel Type -->
+                    <div class="mb-3">
+                        <label class="form-label cc-label">Fuel Type</label>
+                        <select name="fuel" class="form-select cc-input">
+                            <option value="">All Fuel Types</option>
+                            <option value="Petrol" {% if current_filters.fuel == 'Petrol' %}selected{% endif %}>Petrol</option>
+                            <option value="Diesel" {% if current_filters.fuel == 'Diesel' %}selected{% endif %}>Diesel</option>
+                            <option value="Electric" {% if current_filters.fuel == 'Electric' %}selected{% endif %}>Electric</option>
+                            <option value="Hybrid" {% if current_filters.fuel == 'Hybrid' %}selected{% endif %}>Hybrid</option>
+                        </select>
+                    </div>
+
+                    <!-- Transmission -->
+                    <div class="mb-3">
+                        <label class="form-label cc-label">Transmission</label>
+                        <select name="transmission" class="form-select cc-input">
+                            <option value="">All Transmissions</option>
+                            <option value="Automatic" {% if current_filters.transmission == 'Automatic' %}selected{% endif %}>Automatic</option>
+                            <option value="Manual" {% if current_filters.transmission == 'Manual' %}selected{% endif %}>Manual</option>
+                            <option value="Dual-Clutch" {% if current_filters.transmission == 'Dual-Clutch' %}selected{% endif %}>Dual-Clutch</option>
+                        </select>
+                    </div>
+
+                    <!-- Availability -->
+                    <div class="mb-3">
+                        <label class="form-label cc-label">Status</label>
+                        <select name="availability" class="form-select cc-input">
+                            <option value="">Any Status</option>
+                            <option value="Available" {% if current_filters.availability == 'Available' %}selected{% endif %}>Available Now</option>
+                            <option value="Reserved" {% if current_filters.availability == 'Reserved' %}selected{% endif %}>Reserved</option>
+                            <option value="Sold" {% if current_filters.availability == 'Sold' %}selected{% endif %}>Sold</option>
+                        </select>
+                    </div>
+
+                    <!-- Price Range -->
+                    <div class="mb-4">
+                        <label class="form-label cc-label">Price Range (₹)</label>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <input type="number" name="min_price" value="{{ current_filters.min_price }}" class="form-control cc-input form-control-sm" placeholder="Min ₹">
+                            </div>
+                            <div class="col-6">
+                                <input type="number" name="max_price" value="{{ current_filters.max_price }}" class="form-control cc-input form-control-sm" placeholder="Max ₹">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-cc-primary w-100">Apply Filters</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Vehicle Grid -->
+        <div class="col-lg-9">
+            {% if vehicles %}
+                <div class="row g-4">
+                    {% for vehicle in vehicles %}
+                        <div class="col-md-6 col-xl-4">
+                            <div class="cc-card">
+                                <div class="cc-card-img-wrapper">
+                                    <img src="{{ vehicle.display_image }}" alt="{{ vehicle.title }}" class="cc-card-img" loading="lazy">
+                                    <span class="cc-card-badge">{{ vehicle.year }} &bull; {{ vehicle.body_type }}</span>
+
+                                    <!-- Wishlist Button -->
+                                    <button type="button" class="cc-card-wishlist-btn cc-wishlist-toggle {% if vehicle.id in user_wishlist_ids %}active{% endif %}" data-url="{% url 'vehicles:wishlist_toggle' vehicle.id %}" title="Add to Wishlist">
+                                        <i class="bi {% if vehicle.id in user_wishlist_ids %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                                    </button>
+                                </div>
+                                <div class="cc-card-body">
+                                    <span class="cc-card-brand">{{ vehicle.brand.name }}</span>
+                                    <h3 class="cc-card-title">{{ vehicle.model_name }}</h3>
+                                    
+                                    <div class="cc-spec-grid">
+                                        <div class="cc-spec-item">
+                                            Fuel
+                                            <strong>{{ vehicle.fuel_type }}</strong>
+                                        </div>
+                                        <div class="cc-spec-item">
+                                            Trans.
+                                            <strong>{{ vehicle.transmission|truncatechars:10 }}</strong>
+                                        </div>
+                                        <div class="cc-spec-item">
+                                            Mileage
+                                            <strong>{{ vehicle.mileage|floatformat:0 }} km</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="cc-card-footer">
+                                        <div class="cc-card-price-group">
+                                            <span class="cc-card-price">{{ vehicle.price|inr }}</span>
+                                            <span class="cc-card-price-sub">{{ vehicle.availability }}</span>
+                                        </div>
+                                        <a href="{% url 'vehicles:detail' vehicle.slug %}" class="btn btn-sm btn-cc-primary cc-card-action-btn">
+                                            Details
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                {% if page_obj.has_other_pages %}
+                    <nav class="mt-5" aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link bg-dark text-white border-secondary" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&laquo; Prev</a>
+                                </li>
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+                                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                    <a class="page-link {% if page_obj.number == num %}bg-warning border-warning text-dark fw-bold{% else %}bg-dark text-white border-secondary{% endif %}" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                                </li>
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link bg-dark text-white border-secondary" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next &raquo;</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+
+            {% else %}
+                <div class="cc-empty-state">
+                    <i class="bi bi-search cc-empty-icon"></i>
+                    <h3 class="cc-empty-title">No Vehicles Found</h3>
+                    <p class="cc-empty-desc">We could not find any vehicles matching your selected criteria. Try adjusting or clearing your filters.</p>
+                    <a href="{% url 'vehicles:list' %}" class="btn btn-cc-primary">Reset All Filters</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

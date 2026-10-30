@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} — CarCraft Genuine Parts{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small text-secondary">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-secondary">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'products:list' %}" class="text-secondary">Parts & Accessories</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'products:list' %}?category={{ product.category.slug }}" class="text-secondary">{{ product.category.name }}</a></li>
+            <li class="breadcrumb-item active text-white" aria-current="page">{{ product.name|truncatechars:35 }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4 mb-5">
+        <!-- Product Image -->
+        <div class="col-lg-6">
+            <div class="position-relative rounded overflow-hidden border border-secondary" style="background-color: #0b0d10; min-height: 420px;">
+                <img src="{{ product.display_image }}" alt="{{ product.name }}" class="w-100 h-100" style="object-fit: cover; max-height: 500px;">
+                <span class="position-absolute top-0 start-0 m-3 badge bg-dark border border-secondary text-uppercase px-3 py-2">
+                    {{ product.category.name }}
+                </span>
+
+                <!-- Wishlist Toggle -->
+                <button type="button" class="cc-card-wishlist-btn cc-wishlist-toggle {% if is_wishlisted %}active{% endif %}" data-url="{% url 'products:wishlist_toggle' product.id %}" style="top: 15px; right: 15px;" title="Save to Wishlist">
+                    <i class="bi {% if is_wishlisted %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Product Specs & Purchasing -->
+        <div class="col-lg-6">
+            <div class="p-4 rounded border h-100 d-flex flex-direction-column justify-content-between cc-product-detail-specs" style="background-color: #12151b; border-color: #232932 !important;">
+                <div>
+                    <span class="text-uppercase fw-bold text-warning small">{{ product.category.name }}</span>
+                    <h1 class="fs-2 fw-bold text-white mt-1 mb-2">{{ product.name }}</h1>
+                    
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <span class="small" style="color: #94a3b8;">Part #: <span class="text-white font-monospace">{{ product.part_number|default:"OEM-SPEC" }}</span></span>
+                        <span class="small" style="color: #94a3b8;">&bull;</span>
+                        <span class="small" style="color: #94a3b8;">Compatibility: <span class="text-white">{{ product.brand_compatibility }}</span></span>
+                    </div>
+
+                    <!-- Pricing & Stock -->
+                    <div class="d-flex align-items-baseline gap-3 mb-4">
+                        <span class="display-6 fw-extrabold text-white">{{ product.price|inr }}</span>
+                        {% if product.original_price %}
+                            <span class="fs-5 text-decoration-line-through cc-price-original" style="color: #94a3b8;">{{ product.original_price|inr }}</span>
+                        {% endif %}
+                        
+                        {% if product.in_stock %}
+                            <span class="badge bg-success ms-auto"><i class="bi bi-check-circle me-1"></i> In Stock ({{ product.stock }})</span>
+                        {% else %}
+                            <span class="badge bg-danger ms-auto"><i class="bi bi-x-circle me-1"></i> Out of Stock</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Add to Cart Form -->
+                    <form action="{% url 'orders:add_to_cart' product.id %}" method="POST" class="mb-4">
+                        {% csrf_token %}
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width: 110px;">
+                                <label class="form-label cc-label">Quantity</label>
+                                <input type="number" name="quantity" class="form-control cc-input text-center" value="1" min="1" max="{{ product.stock }}" {% if not product.in_stock %}disabled{% endif %}>
+                            </div>
+                            <div class="flex-grow-1 pt-4">
+                                <button type="submit" class="btn btn-cc-primary w-100 py-2" {% if not product.in_stock %}disabled{% endif %}>
+                                    <i class="bi bi-bag-plus me-2"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <hr class="border-secondary my-4">
+
+                    <!-- Description -->
+                    <h3 class="fs-6 fw-bold text-white text-uppercase mb-2">Description</h3>
+                    <p class="small mb-4 cc-product-desc" style="line-height: 1.7; color: #cbd5e1;">
+                        {{ product.description }}
+                    </p>
+
+                    <!-- Technical Specifications -->
+                    {% if product.specs_list %}
+                        <h3 class="fs-6 fw-bold text-white text-uppercase mb-2">Specifications & Warranty</h3>
+                        <ul class="list-unstyled small mb-0" style="color: #cbd5e1;">
+                            {% for spec in product.specs_list %}
+                                <li class="py-1 d-flex align-items-center gap-2">
+                                    <i class="bi bi-chevron-right text-warning"></i>
+                                    <span style="color: #e2e8f0;">{{ spec }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <!-- Assurance Badges -->
+                <div class="row g-2 pt-4 border-top border-secondary mt-4">
+                    <div class="col-4 text-center">
+                        <i class="bi bi-truck text-warning fs-5"></i>
+                        <div class="cc-assurance-item" style="font-size: 0.72rem; color: #94a3b8;">Express Shipping</div>
+                    </div>
+                    <div class="col-4 text-center">
+                        <i class="bi bi-shield-check text-warning fs-5"></i>
+                        <div class="cc-assurance-item" style="font-size: 0.72rem; color: #94a3b8;">100% Genuine OEM</div>
+                    </div>
+                    <div class="col-4 text-center">
+                        <i class="bi bi-arrow-repeat text-warning fs-5"></i>
+                        <div class="cc-assurance-item" style="font-size: 0.72rem; color: #94a3b8;">30-Day Guarantee</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    {% if related_products %}
+        <div class="mt-5 pt-4 border-top border-secondary">
+            <h3 class="fs-4 fw-bold text-white mb-4">Related in {{ product.category.name }}</h3>
+            <div class="row g-4">
+                {% for r_prod in related_products %}
+                    <div class="col-md-3">
+                        <div class="cc-card cc-product-card">
+                            <div class="cc-card-img-wrapper" style="padding-top: 70%;">
+                                <img src="{{ r_prod.display_image }}" alt="{{ r_prod.name }}" class="cc-card-img" loading="lazy">
+                            </div>
+                            <div class="cc-card-body">
+                                <h4 class="cc-card-title fs-6 mb-2">
+                                    <a href="{% url 'products:detail' r_prod.slug %}" class="text-white text-decoration-none">
+                                        {{ r_prod.name|truncatechars:35 }}
+                                    </a>
+                                </h4>
+                                <div class="cc-card-footer">
+                                    <span class="cc-card-price fs-6">{{ r_prod.price|inr }}</span>
+                                    <a href="{% url 'products:detail' r_prod.slug %}" class="btn btn-sm btn-cc-outline">View</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order #{{ order.order_number }} Confirmed — CarCraft Automotive{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Success Status Header -->
+            <div class="text-center mb-4">
+                <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 72px; height: 72px; background: rgba(16, 185, 129, 0.15); border: 2px solid #10b981;">
+                    <i class="bi bi-check-lg text-success fs-1"></i>
+                </div>
+                <span class="cc-section-label justify-content-center">Order Successfully Placed</span>
+                <h1 class="cc-section-heading mb-1">Thank You For Your Order!</h1>
+                <p class="text-secondary">A confirmation has been recorded under reference <strong class="text-warning font-monospace">#{{ order.order_number }}</strong>.</p>
+            </div>
+
+            <!-- Receipt Box -->
+            <div class="p-4 p-md-5 rounded border mb-4" style="background-color: #12151b; border-color: #232932 !important;">
+                <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom border-secondary pb-3 mb-4">
+                    <div>
+                        <span class="text-muted small">Order Number:</span>
+                        <div class="fs-5 fw-bold text-white font-monospace">#{{ order.order_number }}</div>
+                    </div>
+                    <div>
+                        <span class="text-muted small">Date Placed:</span>
+                        <div class="text-white">{{ order.created_at|date:"M d, Y &bull; h:i A" }}</div>
+                    </div>
+                    <div>
+                        <span class="text-muted small">Status:</span>
+                        <div><span class="badge badge-cc-confirmed">{{ order.status }}</span></div>
+                    </div>
+                </div>
+
+                <!-- Shipping Address Summary -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <h6 class="text-uppercase text-secondary small fw-bold mb-2">Shipping Recipient</h6>
+                        <div class="text-white fw-semibold">{{ order.full_name }}</div>
+                        <div class="text-secondary small">{{ order.address }}</div>
+                        <div class="text-secondary small">{{ order.city }}, {{ order.state }} {{ order.pincode }}</div>
+                        <div class="text-secondary small mt-1"><i class="bi bi-telephone text-warning me-1"></i> {{ order.phone }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-uppercase text-secondary small fw-bold mb-2">Payment Details</h6>
+                        <div class="text-white fw-semibold">{{ order.payment_method }}</div>
+                        <div class="text-success small fw-semibold"><i class="bi bi-check2-circle me-1"></i> Status: {{ order.payment_status }}</div>
+                        <div class="text-muted small mt-1">Receipt Email: {{ order.email }}</div>
+                    </div>
+                </div>
+
+                <!-- Items Breakdown -->
+                <h6 class="text-uppercase text-secondary small fw-bold mb-3">Order Items</h6>
+                <div class="table-responsive mb-4">
+                    <table class="table table-cc align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th class="text-end">Item Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            {% if item.product and item.product.display_image %}
+                                                <img src="{{ item.product.display_image }}" class="rounded" style="width: 50px; height: 40px; object-fit: cover;">
+                                            {% endif %}
+                                            <span class="fw-semibold text-white">{{ item.product_name }}</span>
+                                        </div>
+                                    </td>
+                                    <td>{{ item.price|inr }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td class="text-end text-warning fw-bold">{{ item.item_total|inr }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end text-muted">Subtotal:</td>
+                                <td class="text-end text-white fw-semibold">{{ order.subtotal|inr }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end text-muted">Estimated Tax (12%):</td>
+                                <td class="text-end text-white fw-semibold">{{ order.tax|inr }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end text-muted">Shipping:</td>
+                                <td class="text-end text-success fw-semibold">FREE</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end text-uppercase fw-bold text-white fs-6">Order Total:</td>
+                                <td class="text-end text-warning fw-extrabold fs-5">{{ order.total_amount|inr }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Actions -->
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 pt-3 border-top border-secondary">
+                    <a href="{% url 'products:list' %}" class="btn btn-cc-outline">
+                        <i class="bi bi-bag me-1"></i> Continue Shopping
+                    </a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'orders:history' %}" class="btn btn-cc-primary">
+                            <i class="bi bi-clock-history me-1"></i> View Order History
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

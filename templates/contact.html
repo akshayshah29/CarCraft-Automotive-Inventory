@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Us | CarCraft{% endblock %}
+{% block navbar_class %}solid{% endblock %}
+
+{% block content %}
+<!-- Page Hero -->
+<section class="cc-hero-banner" style="background-color: #12151b; padding: 100px 0 60px;">
+    <div class="container text-center text-white">
+        <h1 class="display-4 fw-bold mb-3">Get In Touch</h1>
+        <p class="lead text-secondary mx-auto" style="max-width: 600px;">We're here to assist you with any inquiries regarding our vehicles, parts, or services.</p>
+    </div>
+</section>
+
+<section style="background-color: #0d1015; padding: 80px 0;">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Contact Form -->
+            <div class="col-lg-7">
+                <div class="cc-card p-4 p-md-5" style="background-color: #12151b; border: 1px solid #232932; border-radius: 12px;">
+                    <h3 class="text-white mb-4">Send us a Message</h3>
+                    <form action="{% url 'contact' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-secondary">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" name="name" class="form-control cc-input" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-secondary">Email Address <span class="text-danger">*</span></label>
+                                <input type="email" name="email" class="form-control cc-input" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-secondary">Phone Number</label>
+                                <input type="text" name="phone" class="form-control cc-input" placeholder="+91 98765 43210">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-secondary">Subject <span class="text-danger">*</span></label>
+                                <select name="subject" class="form-select cc-input" required>
+                                    <option value="" selected disabled>Select an option...</option>
+                                    <option value="General Inquiry">General Inquiry</option>
+                                    <option value="Vehicle Purchase">Vehicle Purchase</option>
+                                    <option value="Parts Query">Parts Query</option>
+                                    <option value="Service Booking">Service Booking</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label text-secondary">Message <span class="text-danger">*</span></label>
+                                <textarea name="message" class="form-control cc-input" rows="5" required></textarea>
+                            </div>
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-cc-primary w-100">Send Message</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="col-lg-5">
+                <div class="d-flex flex-column gap-4">
+                    <div class="cc-card p-4" style="background-color: #12151b; border: 1px solid #232932; border-radius: 12px;">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center bg-dark" style="width: 50px; height: 50px; border: 1px solid #232932;">
+                                <i class="bi bi-geo-alt text-warning fs-4"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-white mb-1">Our Location</h5>
+                                <p class="text-secondary mb-0">CarCraft Automotive Hub<br>Sector 62, Noida,<br>Uttar Pradesh 201309, India</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cc-card p-4" style="background-color: #12151b; border: 1px solid #232932; border-radius: 12px;">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center bg-dark" style="width: 50px; height: 50px; border: 1px solid #232932;">
+                                <i class="bi bi-telephone text-warning fs-4"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-white mb-1">Phone</h5>
+                                <p class="text-secondary mb-0">+91 98765 43210</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cc-card p-4" style="background-color: #12151b; border: 1px solid #232932; border-radius: 12px;">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center bg-dark" style="width: 50px; height: 50px; border: 1px solid #232932;">
+                                <i class="bi bi-envelope text-warning fs-4"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-white mb-1">Email</h5>
+                                <p class="text-secondary mb-0">support@carcraft.in</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cc-card p-4" style="background-color: #12151b; border: 1px solid #232932; border-radius: 12px;">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center bg-dark" style="width: 50px; height: 50px; border: 1px solid #232932;">
+                                <i class="bi bi-clock text-warning fs-4"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-white mb-1">Business Hours</h5>
+                                <p class="text-secondary mb-0">Monday – Saturday: 9:00 AM – 7:00 PM<br>Sunday: 10:00 AM – 4:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Map Placeholder -->
+<section style="background-color: #12151b;">
+    <div class="container-fluid px-0">
+        <div style="width: 100%; height: 400px; background-color: #1a1e24; display: flex; align-items: center; justify-content: center; border-top: 1px solid #232932; border-bottom: 1px solid #232932;">
+            <div class="text-center">
+                <i class="bi bi-map text-secondary" style="font-size: 3rem;"></i>
+                <h4 class="text-white mt-3">Interactive Map</h4>
+                <p class="text-secondary">CarCraft Automotive Hub, Sector 62, Noida, Uttar Pradesh 201309</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section style="background-color: #0d1015; padding: 80px 0;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="cc-section-label text-warning">SUPPORT</span>
+            <h2 class="cc-section-heading text-white">Frequently Asked Questions</h2>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion accordion-flush" id="faqAccordion">
+                    <div class="accordion-item mb-3" style="background-color: #12151b; border: 1px solid #232932; border-radius: 8px; overflow: hidden;">
+                        <h2 class="accordion-header" id="faq1">
+                            <button class="accordion-button collapsed text-white" style="background-color: #12151b;" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1">
+                                How do I book a service appointment?
+                            </button>
+                        </h2>
+                        <div id="collapse1" class="accordion-collapse collapse" aria-labelledby="faq1" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary" style="background-color: #12151b;">
+                                You can book a service appointment by creating an account and navigating to the Services section. Select your desired service and choose an available time slot.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item mb-3" style="background-color: #12151b; border: 1px solid #232932; border-radius: 8px; overflow: hidden;">
+                        <h2 class="accordion-header" id="faq2">
+                            <button class="accordion-button collapsed text-white" style="background-color: #12151b;" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                                Do you ship parts across India?
+                            </button>
+                        </h2>
+                        <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="faq2" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary" style="background-color: #12151b;">
+                                Currently, we ship genuine parts nationwide across India with full package tracking. For bulk or enterprise queries, please contact our support team.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item mb-3" style="background-color: #12151b; border: 1px solid #232932; border-radius: 8px; overflow: hidden;">
+                        <h2 class="accordion-header" id="faq3">
+                            <button class="accordion-button collapsed text-white" style="background-color: #12151b;" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                                Are all your parts genuine OEM?
+                            </button>
+                        </h2>
+                        <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="faq3" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary" style="background-color: #12151b;">
+                                Yes, all our parts are 100% genuine Original Equipment Manufacturer (OEM) parts, guaranteeing perfect fit and performance.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item mb-3" style="background-color: #12151b; border: 1px solid #232932; border-radius: 8px; overflow: hidden;">
+                        <h2 class="accordion-header" id="faq4">
+                            <button class="accordion-button collapsed text-white" style="background-color: #12151b;" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
+                                Can I test drive a vehicle before purchasing?
+                            </button>
+                        </h2>
+                        <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="faq4" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary" style="background-color: #12151b;">
+                                Absolutely. We encourage test drives. You can schedule a visit to our CarCraft Automotive Hub in Sector 62, Noida to experience our premium vehicles firsthand.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

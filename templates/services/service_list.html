@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Automotive Services & Certified Maintenance — CarCraft{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small text-secondary">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-secondary">Home</a></li>
+            <li class="breadcrumb-item active text-white" aria-current="page">Automotive Services</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex flex-wrap align-items-end justify-content-between mb-5">
+        <div>
+            <span class="cc-section-label">Manufacturer-Certified Workshop</span>
+            <h1 class="cc-section-heading mb-1">Precision Automotive Services</h1>
+            <p class="text-secondary mb-0">From routine synthetic oil updates to computer diagnostics & Hunter 3D laser alignment.</p>
+        </div>
+        <a href="{% url 'services:book' %}" class="btn btn-cc-primary mt-3 mt-md-0">
+            <i class="bi bi-calendar2-plus me-1"></i> Quick Appointment Booking
+        </a>
+    </div>
+
+    <!-- Services Grid (All 8 Services) -->
+    <div class="row g-4">
+        {% for srv in services %}
+            <div class="col-lg-3 col-md-6">
+                <div class="cc-service-card">
+                    <div class="cc-service-img-wrapper">
+                        <img src="{{ srv.display_image }}" alt="{{ srv.name }}" class="cc-service-img" loading="lazy">
+                        <div class="cc-service-icon-box">
+                            <i class="bi {{ srv.icon_class }}"></i>
+                        </div>
+                    </div>
+                    <div class="cc-service-body">
+                        <h3 class="cc-service-title fs-5 mb-1">{{ srv.name }}</h3>
+                        <p class="cc-service-tagline small mb-3">{{ srv.tagline }}</p>
+
+                        <!-- Key Inclusions Preview -->
+                        <div class="cc-service-inclusions small mb-3">
+                            {% for inc in srv.inclusions_list|slice:":2" %}
+                                <div class="d-flex align-items-center gap-1 py-1">
+                                    <i class="bi bi-check text-warning fs-6"></i>
+                                    <span>{{ inc|truncatechars:32 }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="cc-service-meta">
+                            <div class="cc-service-meta-item">
+                                Starting at
+                                <strong class="fs-6">{{ srv.price|inr }}</strong>
+                            </div>
+                            <div class="cc-service-meta-item text-end">
+                                Duration
+                                <strong class="fs-6">{{ srv.duration }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'services:detail' srv.slug %}" class="btn btn-sm btn-cc-outline flex-grow-1">
+                                Details
+                            </a>
+                            <a href="{% url 'services:book_specific' srv.slug %}" class="btn btn-sm btn-cc-primary flex-grow-1">
+                                Book
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Workshop Guarantee Banner -->
+    <div class="p-4 p-md-5 rounded border mt-5 text-center" style="background-color: #12151b; border-color: #232932 !important;">
+        <span class="cc-section-label justify-content-center">CarCraft Workshop Guarantee</span>
+        <h3 class="fs-3 fw-bold text-white mb-2">Factory Warranty Protected Servicing</h3>
+        <p class="text-secondary mx-auto mb-4" style="max-width: 650px;">
+            All repair jobs use OEM genuine components and factory-approved lubricants, protecting your original manufacturer warranty with full digital service logbook registration.
+        </p>
+        <a href="{% url 'services:book' %}" class="btn btn-cc-primary px-4 py-2">
+            Schedule a Service Slot Now
+        </a>
+    </div>
+</div>
+{% endblock %}

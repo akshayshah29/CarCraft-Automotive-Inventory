@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Order History — CarCraft Automotive{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small text-secondary">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-secondary">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'accounts:profile' %}" class="text-secondary">Account</a></li>
+            <li class="breadcrumb-item active text-white" aria-current="page">Orders</li>
+        </ol>
+    </nav>
+
+    <div class="mb-4">
+        <span class="cc-section-label">Purchase Records</span>
+        <h1 class="cc-section-heading mb-1">Your Order History</h1>
+        <p class="text-secondary mb-0">Track shipments, download invoices and review genuine parts purchases.</p>
+    </div>
+
+    {% if orders %}
+        <div class="table-responsive rounded border" style="background-color: #12151b; border-color: #232932 !important;">
+            <table class="table table-cc align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Order Reference</th>
+                        <th>Date</th>
+                        <th>Items</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td>
+                                <span class="fw-bold font-monospace text-warning">#{{ order.order_number }}</span>
+                            </td>
+                            <td>{{ order.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <span class="text-white">{{ order.items.count }} item{{ order.items.count|pluralize }}</span>
+                                <div class="text-muted small">
+                                    {% for it in order.items.all|slice:":2" %}
+                                        {{ it.product_name|truncatechars:20 }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                    {% if order.items.count > 2 %}...{% endif %}
+                                </div>
+                            </td>
+                            <td class="text-white fw-bold">{{ order.total_amount|inr }}</td>
+                            <td>
+                                <span class="badge {% if order.status == 'Delivered' or order.status == 'Confirmed' %}badge-cc-confirmed{% elif order.status == 'Cancelled' %}badge-cc-cancelled{% else %}badge-cc-pending{% endif %}">
+                                    {{ order.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{% url 'orders:detail' order.order_number %}" class="btn btn-sm btn-cc-outline">
+                                    View Receipt
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="cc-empty-state">
+            <i class="bi bi-clock-history cc-empty-icon"></i>
+            <h3 class="cc-empty-title">No Orders Yet</h3>
+            <p class="cc-empty-desc">You have not placed any orders yet. Discover our genuine parts and performance accessories catalog.</p>
+            <a href="{% url 'products:list' %}" class="btn btn-cc-primary">Browse Parts</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

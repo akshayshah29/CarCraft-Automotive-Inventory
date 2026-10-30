@@ -1,0 +1,16 @@
+venv/
+.venv/
+env/
+__pycache__/
+*.py[cod]
+*.log
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+db.sqlite3
+db - Copy.sqlite3
+*backup*.json
+*backup*.sqlite3
+staticfiles/

@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search Results for "{{ q }}" — CarCraft{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small text-secondary">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-secondary">Home</a></li>
+            <li class="breadcrumb-item active text-white" aria-current="page">Search</li>
+        </ol>
+    </nav>
+
+    <div class="mb-4">
+        <span class="cc-section-label">Global Search Results</span>
+        <h1 class="cc-section-heading mb-1">Results for "<span class="text-warning">{{ q }}</span>"</h1>
+        <p class="text-secondary mb-0">Found {{ total_results }} item{{ total_results|pluralize }} matching your query across the CarCraft platform.</p>
+    </div>
+
+    <!-- Search Box -->
+    <div class="mb-5">
+        <form action="{% url 'search' %}" method="GET" class="max-w-700">
+            <div class="input-group">
+                <input type="text" name="q" value="{{ q }}" class="form-control cc-input form-control-lg" placeholder="Search again by model, part, or service...">
+                <button class="btn btn-cc-primary px-4" type="submit">SEARCH</button>
+            </div>
+        </form>
+    </div>
+
+    {% if total_results > 0 %}
+        <!-- Vehicles Matches -->
+        {% if vehicles %}
+            <div class="mb-5">
+                <h3 class="fs-4 fw-bold text-white mb-3">
+                    <i class="bi bi-car-front text-warning me-2"></i> Vehicles ({{ vehicles|length }})
+                </h3>
+                <div class="row g-4">
+                    {% for vehicle in vehicles %}
+                        <div class="col-md-4">
+                            <div class="cc-card">
+                                <div class="cc-card-img-wrapper" style="padding-top: 60%;">
+                                    <img src="{{ vehicle.display_image }}" alt="{{ vehicle.title }}" class="cc-card-img" loading="lazy">
+                                    <span class="cc-card-badge">{{ vehicle.year }} &bull; {{ vehicle.body_type }}</span>
+                                </div>
+                                <div class="cc-card-body">
+                                    <span class="cc-card-brand">{{ vehicle.brand.name }}</span>
+                                    <h4 class="cc-card-title fs-5">{{ vehicle.model_name }}</h4>
+                                    <div class="cc-card-footer">
+                                        <div class="cc-card-price-group">
+                                            <span class="cc-card-price">{{ vehicle.price|inr }}</span>
+                                        </div>
+                                        <a href="{% url 'vehicles:detail' vehicle.slug %}" class="btn btn-sm btn-cc-primary cc-card-action-btn">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Products Matches -->
+        {% if products %}
+            <div class="mb-5">
+                <h3 class="fs-4 fw-bold text-white mb-3">
+                    <i class="bi bi-box-seam text-warning me-2"></i> Parts & Accessories ({{ products|length }})
+                </h3>
+                <div class="row g-4">
+                    {% for product in products %}
+                        <div class="col-md-3">
+                            <div class="cc-card">
+                                <div class="cc-card-img-wrapper" style="padding-top: 70%;">
+                                    <img src="{{ product.display_image }}" alt="{{ product.name }}" class="cc-card-img" loading="lazy">
+                                </div>
+                                <div class="cc-card-body">
+                                    <h4 class="cc-card-title fs-6 mb-2">
+                                        <a href="{% url 'products:detail' product.slug %}" class="text-white text-decoration-none">
+                                            {{ product.name|truncatechars:38 }}
+                                        </a>
+                                    </h4>
+                                    <div class="cc-card-footer">
+                                        <span class="cc-card-price fs-6">{{ product.price|inr }}</span>
+                                        <a href="{% url 'products:detail' product.slug %}" class="btn btn-sm btn-cc-outline">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Services Matches -->
+        {% if services %}
+            <div class="mb-5">
+                <h3 class="fs-4 fw-bold text-white mb-3">
+                    <i class="bi bi-wrench-adjustable text-warning me-2"></i> Automotive Services ({{ services|length }})
+                </h3>
+                <div class="row g-4">
+                    {% for srv in services %}
+                        <div class="col-md-3">
+                            <div class="cc-service-card">
+                                <div class="cc-service-img-wrapper" style="height: 150px;">
+                                    <img src="{{ srv.display_image }}" alt="{{ srv.name }}" class="cc-service-img" loading="lazy">
+                                </div>
+                                <div class="cc-service-body">
+                                    <h4 class="cc-service-title fs-6">{{ srv.name }}</h4>
+                                    <p class="cc-service-tagline text-muted small">{{ srv.tagline }}</p>
+                                    <a href="{% url 'services:detail' srv.slug %}" class="btn btn-sm btn-cc-primary w-100">
+                                        View Service ({{ srv.price|inr }})
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+    {% else %}
+        <div class="cc-empty-state">
+            <i class="bi bi-search cc-empty-icon"></i>
+            <h3 class="cc-empty-title">No Matching Results</h3>
+            <p class="cc-empty-desc">We couldn't find any vehicles, parts, or services matching "{{ q }}". Try searching for brand names like "BMW" or parts like "brakes".</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'vehicles:list' %}" class="btn btn-cc-primary">Browse Vehicles</a>
+                <a href="{% url 'products:list' %}" class="btn btn-cc-outline">Browse Parts</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
